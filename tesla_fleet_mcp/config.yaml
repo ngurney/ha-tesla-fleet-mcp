@@ -1,5 +1,5 @@
 name: Tesla Fleet MCP
-version: "1.0.0"
+version: "1.0.1"
 slug: tesla_fleet_mcp
 description: Always-on Tesla Fleet MCP (Streamable HTTP) for Grok Bot — bound inside the container; expose only via Cloudflared.
 url: https://github.com/supervised-nl/tesla-fleet-mcp
@@ -24,6 +24,9 @@ options:
   tesla_mcp_token: ""
   tesla_mcp_host: "0.0.0.0"
   tesla_mcp_port: 8787
+  tesla_access_token: ""
+  tesla_refresh_token: ""
+  tesla_expires_at: 0
 schema:
   tesla_client_id: str
   tesla_client_secret: password
@@ -33,3 +36,6 @@ schema:
   tesla_mcp_token: password
   tesla_mcp_host: str
   tesla_mcp_port: int
+  tesla_access_token: password?
+  tesla_refresh_token: password?
+  tesla_expires_at: int?

@@ -6,11 +6,26 @@ set -euo pipefail
 
 DATA="/data"
 CACHE="${DATA}/token-cache.json"
-SEED="/opt/tesla-fleet-mcp/token-cache.seed.json"
 
-if [[ ! -f "${CACHE}" && -f "${SEED}" ]]; then
-  cp "${SEED}" "${CACHE}"
-  chmod 600 "${CACHE}"
+if [[ ! -f "${CACHE}" ]]; then
+  ACCESS="$(bashio::config 'tesla_access_token')"
+  REFRESH="$(bashio::config 'tesla_refresh_token')"
+  EXPIRES="$(bashio::config 'tesla_expires_at')"
+  if [[ -n "${ACCESS}" && -n "${REFRESH}" ]]; then
+    bashio::log.info "Seeding Tesla token cache from add-on options"
+    python3 - <<PY
+import json
+from pathlib import Path
+Path("${CACHE}").write_text(json.dumps({
+  "access_token": """${ACCESS}""",
+  "refresh_token": """${REFRESH}""",
+  "expires_at": int("${EXPIRES}" or 0),
+}))
+PY
+    chmod 600 "${CACHE}"
+  else
+    bashio::log.warning "No token cache yet — run OAuth / provide seed tokens in options"
+  fi
 fi
 
 export TESLA_CLIENT_ID="$(bashio::config 'tesla_client_id')"
