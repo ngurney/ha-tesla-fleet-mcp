@@ -13,18 +13,14 @@ if [[ ! -f "${CACHE}" ]]; then
   EXPIRES="$(bashio::config 'tesla_expires_at')"
   if [[ -n "${ACCESS}" && -n "${REFRESH}" ]]; then
     bashio::log.info "Seeding Tesla token cache from add-on options"
-    python3 - <<PY
-import json
-from pathlib import Path
-Path("${CACHE}").write_text(json.dumps({
-  "access_token": """${ACCESS}""",
-  "refresh_token": """${REFRESH}""",
-  "expires_at": int("${EXPIRES}" or 0),
-}))
-PY
+    export SEED_ACCESS="${ACCESS}"
+    export SEED_REFRESH="${REFRESH}"
+    export SEED_EXPIRES="${EXPIRES:-0}"
+    node -e 'const fs=require("fs"); fs.writeFileSync(process.argv[1], JSON.stringify({access_token:process.env.SEED_ACCESS,refresh_token:process.env.SEED_REFRESH,expires_at:Number(process.env.SEED_EXPIRES||0)}));' "${CACHE}"
     chmod 600 "${CACHE}"
+    unset SEED_ACCESS SEED_REFRESH SEED_EXPIRES ACCESS REFRESH
   else
-    bashio::log.warning "No token cache yet — run OAuth / provide seed tokens in options"
+    bashio::log.warning "No token cache yet — provide seed tokens in options or complete OAuth"
   fi
 fi
 
