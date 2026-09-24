@@ -1,2 +1,9 @@
-#!/usr/bin/env bash
-exec s6-svscanctl -t /var/run/s6/services
+#!/command/with-contenv bashio
+# ==============================================================================
+# Take down the S6 supervision tree when the service exits
+# ==============================================================================
+if [[ "${1}" -ne 0 ]] && [[ "${1}" -ne 256 ]]; then
+  bashio::log.warning "Tesla Fleet MCP crashed with exit code ${1}"
+else
+  bashio::log.info "Tesla Fleet MCP stopped"
+fi
