@@ -1,0 +1,28 @@
+#!/usr/bin/with-contenv bashio
+# ==============================================================================
+# Tesla Fleet MCP — Streamable HTTP
+# ==============================================================================
+set -euo pipefail
+
+DATA="/data"
+CACHE="${DATA}/token-cache.json"
+SEED="/opt/tesla-fleet-mcp/token-cache.seed.json"
+
+if [[ ! -f "${CACHE}" && -f "${SEED}" ]]; then
+  cp "${SEED}" "${CACHE}"
+  chmod 600 "${CACHE}"
+fi
+
+export TESLA_CLIENT_ID="$(bashio::config 'tesla_client_id')"
+export TESLA_CLIENT_SECRET="$(bashio::config 'tesla_client_secret')"
+export TESLA_REDIRECT_URI="$(bashio::config 'tesla_redirect_uri')"
+export TESLA_AUDIENCE="$(bashio::config 'tesla_audience')"
+export TESLA_REGION="$(bashio::config 'tesla_region')"
+export TESLA_MCP_TOKEN="$(bashio::config 'tesla_mcp_token')"
+export TESLA_MCP_HOST="$(bashio::config 'tesla_mcp_host')"
+export TESLA_MCP_PORT="$(bashio::config 'tesla_mcp_port')"
+export TESLA_CACHE_PATH="${CACHE}"
+export MCP_TRANSPORT=http
+
+cd /opt/tesla-fleet-mcp
+exec npx tsx src/index.ts --http

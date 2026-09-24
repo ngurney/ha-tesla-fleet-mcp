@@ -1,0 +1,30 @@
+{
+  "name": "tesla-fleet-mcp",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "description": "Tesla Fleet MCP for Grok Bot, Grok Build, and Cursor. Streamable HTTP plugin plus local stdio.",
+  "bin": {
+    "tesla-fleet": "./src/index.ts",
+    "tesla-fleet-login": "./src/login.ts"
+  },
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "start:http": "tsx src/index.ts --http",
+    "login": "tsx src/login.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.2.0"
+  }
+}
